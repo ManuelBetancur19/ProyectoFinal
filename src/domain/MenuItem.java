@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class MenuItem implements Serializable{
     //Variables
-    private final int idItem;
+    private int idItem;
     private double priceItem;
     private String nameItem;
     private String descriptionItem;
@@ -15,11 +15,27 @@ public class MenuItem implements Serializable{
         setAvailableItem(availableItem);
         setCategoryItem(categoryItem);
         setDescriptionItem(descriptionItem);
-        this.idItem=idItem;
+        setIdItem(idItem);
         setNameItem(nameItem);
         setPriceItem(priceItem);
     }
+    //otro constructor
+    public MenuItem(){
+        idItem = 1;
+        priceItem = 10000;
+        nameItem = "Sin nombrar";
+        descriptionItem = "Sin descripcion";
+        categoryItem = "Sin Categoria";
+        availableItem = false;
+    }
     //Setters
+    public void setIdItem(int idItem){
+        if(idItem <= 0){
+            this.idItem = 1;
+        }else{
+            this.idItem = idItem;
+        }
+    }
     public void setPriceItem(double priceItem){
         if(priceItem <= 0){
             this.priceItem = 1000;
