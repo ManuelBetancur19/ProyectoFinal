@@ -19,7 +19,6 @@ public class MenuItem implements Serializable{
         setNameItem(nameItem);
         setPriceItem(priceItem);
     }
-    //otro constructor
     public MenuItem(){
         idItem = 1;
         priceItem = 10000;

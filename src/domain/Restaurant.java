@@ -1,5 +1,8 @@
 package domain;
+
 //list order, list menuitem, list customer, list table
-public class Restaurant {
+import java.io.Serializable;
+public class Restaurant implements Serializable{
+    
     
 }
