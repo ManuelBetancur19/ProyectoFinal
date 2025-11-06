@@ -1,6 +1,6 @@
 package domain;
-
-public class Table {
+import java.io.Serializable;
+public class Table implements Serializable {
     private int tableNumber;
     
     public Table(int tableNumber){
@@ -11,7 +11,7 @@ public class Table {
         if (tableNumber > 0){
             this.tableNumber = tableNumber;
         }else{
-            this.tableNumber = 1;
+            this.tableNumber = 0;
         }
     }
     
