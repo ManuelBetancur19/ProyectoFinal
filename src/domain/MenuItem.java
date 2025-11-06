@@ -2,8 +2,9 @@ package domain;
 
 import java.io.Serializable;
 
-public class MenuItem implements Serializable{
-    //Variables
+public class MenuItem implements Serializable {
+
+    //variables//
     private int idItem;
     private double priceItem;
     private String nameItem;
@@ -11,7 +12,7 @@ public class MenuItem implements Serializable{
     private String categoryItem;
     private boolean availableItem;
     
-    //Constructors
+    //Constructors//
     public MenuItem(int idItem, double priceItem, String nameItem, String descriptionItem, String categoryItem, boolean availableItem){
         setAvailableItem(availableItem);
         setCategoryItem(categoryItem);
@@ -28,7 +29,7 @@ public class MenuItem implements Serializable{
         categoryItem = "Sin Categoria";
         availableItem = false;
     }
-    //Setters
+    //setters//
     public void setIdItem(int idItem){
         if(idItem <= 0){
             this.idItem = 1;
@@ -69,7 +70,7 @@ public class MenuItem implements Serializable{
             this.availableItem = false;
         }
     }
-    //getters
+    //getters//
     public int getIdItem(){
         return idItem;
     }
