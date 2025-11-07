@@ -59,5 +59,34 @@ public class Restaurant implements Serializable{
     public List<Customer> getCustomers(){
         return customers;
     }
-    
+
+    //methods for add/remove in the lists//
+    public void addMenuItem(MenuItem item){
+        dishes.add(item);
+    }
+    public void removeMenuItem(MenuItem item){
+        dishes.remove(item);
+    }
+
+    public void addTable(Table table){
+        tables.add(table);
+    }
+    public void removeTable(Table table){
+        tables.remove(table);
+    }
+
+    public void addOrder(Order order){
+        orders.add(order);
+    }
+    public void removeOrder(Order order){
+        orders.remove(order);
+    }
+
+    public void addCustomer(Customer customer){
+        customers.add(customer);
+    }
+    public void removeCustomer(Customer customer){
+        customers.remove(customer);
+    }
+
 }
