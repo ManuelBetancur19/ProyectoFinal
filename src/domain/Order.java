@@ -6,10 +6,10 @@ import java.util.ArrayList;
 public class Order implements Serializable{
     
     //variables//
-    private final int idOrder;
-    private final ArrayList<MenuItem> menuItems;
-    private final Customer customer;
-    private final Table table;
+    private int idOrder;
+    private ArrayList<MenuItem> menuItems;
+    private Customer customer;
+    private Table table;
 
     //constructor//
     public Order(int idOrder, ArrayList<MenuItem> menuItems, Customer customer, Table table){
