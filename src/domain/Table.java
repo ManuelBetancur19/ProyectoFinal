@@ -6,6 +6,7 @@ public class Table implements Serializable {
 
     //information of table//
     private int tableNumber;
+    //MAS ATRIBUTOS
     
     //constructor//
     public Table(int tableNumber){

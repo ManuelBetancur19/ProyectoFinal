@@ -6,7 +6,8 @@ public class Customer implements Serializable {
 
     //information of customer//
     private String customerName;
-    private int idNumber;
+    private int customerIdNumber;
+    //MAS ATRIBUTOS
 
     //constructor//
     public Customer (String customerName){
@@ -17,12 +18,12 @@ public class Customer implements Serializable {
     public void setCustomerName(String customerName){
         this.customerName = customerName;
     }
-    public void setIdNumber(int idNumber){
+    public void setCustomerIdNumber(int idNumber){
         if(idNumber > 0){
-            this.idNumber = idNumber;
+            this.customerIdNumber = idNumber;
         }
         else{
-            this.idNumber = 0;
+            this.customerIdNumber = 0;
         }
     }
 
@@ -30,7 +31,7 @@ public class Customer implements Serializable {
     public String getCustomerName(){
         return customerName;
     }
-    public int getIdNumber(){
-        return idNumber;
+    public int getCustomerIdNumber(){
+        return customerIdNumber;
     }
 }

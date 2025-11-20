@@ -2,6 +2,7 @@ package domain;
 
 import java.io.Serializable;
 import java.util.List;
+import domain.Customer;
 
 public class Restaurant implements Serializable{
     
@@ -15,12 +16,8 @@ public class Restaurant implements Serializable{
     private List <Customer> customers;
     
     //constructor//
-    public Restaurant(String name, List<MenuItem> dishes, List<Table> tables, List<Order> orders, List<Customer> customers){
+    public Restaurant(String name){
         setName(name);
-        setDishes(dishes);
-        setTables(tables);
-        setOrders(orders);
-        setCustomers(customers);
     }
 
     //setters//
@@ -32,19 +29,6 @@ public class Restaurant implements Serializable{
             this.name = name;
         }
     }
-    public void setDishes(List<MenuItem> dishes){
-        this.dishes = dishes;
-
-        }
-    public void setTables(List<Table> tables){
-        this.tables = tables;
-        }
-    public void setOrders(List<Order> orders){
-        this.orders= orders;
-        }
-    public void setCustomers(List<Customer> customers){
-        this.customers = customers;
-        }
     
     //getters//
     public String getName(){
@@ -91,5 +75,39 @@ public class Restaurant implements Serializable{
     public void removeCustomer(Customer customer){
         customers.remove(customer);
     }
+    //
+    public Customer findCustomerById(int customerIdNumber){
+        for (Customer customer : customers){
+            if(customerIdNumber == customer.getCustomerIdNumber()){
+                return customer;
+            }
+        }
+        return null;
+    }
+    public Order findOrderById(int idOrder){
+        for(Order order:orders){
+            if (idOrder == order.getIdOrder()){
+                return order;
+            }
+        }
+        return null;
+    }
+    public Table findTableById(int tableNumber){
+        for(Table table:tables){
+            if(tableNumber == table.getTableNumber()){
+                return table;
+            }
+        }
+        return null;
+    }
+    public MenuItem findMenuItemById(int idItem){
+        for(MenuItem dishe : dishes){
+            if(idItem == dishe.getIdItem()){
+                return dishe;
+            }
+        }
+        return null;
+    }
+    
 
 }
