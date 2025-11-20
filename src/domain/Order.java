@@ -23,9 +23,6 @@ public class Order implements Serializable{
     public void setIdOrder(int idOrder){
         this.idOrder = idOrder;
     }
-    public void setMenuItems(ArrayList<MenuItem> menuItems){
-        this.menuItems = menuItems;
-    }
     public void setCustomer(Customer customer){
         this.customer = customer;
     }
