@@ -92,8 +92,15 @@ public class Main {
                             String name = scanner.nextLine();
                             System.out.print("Enter description: ");
                             String desc = scanner.nextLine();
+
                             System.out.print("Enter price: ");
                             double price = Double.parseDouble(scanner.nextLine());
+
+                            if (price < 0) {
+                                System.out.println("Price cannot be negative.");
+                                break;
+                            }
+
                             MenuItem mi = r.addMenuItem(name, desc, price);
                             System.out.println("Added: " + mi);
                         } catch (Exception e) {
@@ -204,10 +211,18 @@ public class Main {
                 switch (op) {
                     case "1":
                         try {
+                            // ---- FIX: No añadir si no hay mesas libres ----
+                            Table free = r.getFirstFreeTable();
+                            if (free == null) {
+                                System.out.println("All tables are occupied. Cannot add customer.");
+                                break;
+                            }
+
                             System.out.print("Enter customer name: ");
                             String name = scanner.nextLine();
                             System.out.print("Enter identification number: ");
                             String idNumber = scanner.nextLine();
+
                             Customer c = r.addCustomer(name, idNumber);
                             System.out.println("Added: " + c);
                         } catch (Exception e) {
@@ -340,12 +355,27 @@ public class Main {
 
                             System.out.print("Enter order ID to close: ");
                             int oid3 = Integer.parseInt(scanner.nextLine());
-                            boolean closed = r.closeOrder(oid3);
-                            if (closed) {
-                                Order closedOrder = r.getOrderById(oid3);
-                                System.out.println("Order closed. Total: $" + closedOrder.calculateTotal());
-                            } else
+
+                            // ---- FIX: liberar mesa después de cerrar la orden ----
+                            Order order = r.getOrderById(oid3);
+                            if (order == null) {
                                 System.out.println("Order not found.");
+                                break;
+                            }
+
+                            boolean closed = r.closeOrder(oid3);
+
+                            if (closed) {
+                                // Liberar mesa asociada al customer
+                                Customer cust = order.getCustomer();
+                                if (cust != null) {
+                                    r.freeTable(cust.getId());
+                                }
+
+                                System.out.println("Order closed. Total: $" + order.calculateTotal());
+                            } else {
+                                System.out.println("Order not found.");
+                            }
                         } catch (Exception e) {
                             System.out.println("Error closing order.");
                         }
