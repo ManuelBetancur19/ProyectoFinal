@@ -1,12 +1,17 @@
 package domain;
 
-public class MenuItem {
+import java.io.Serializable;
+
+public class MenuItem implements Serializable {
+
+    // variables
     private static int counter = 1;
     private int id;
     private String name;
     private String description;
     private double price;
 
+    // constructor
     public MenuItem(String name, String description, double price) {
         this.id = counter++;
         this.name = name;
@@ -14,10 +19,28 @@ public class MenuItem {
         this.price = price;
     }
 
-    public int getId() { return id; }
-    public String getName() { return name; }
-    public String getDescription() { return description; }
-    public double getPrice() { return price; }
+    // setters
+    public static void setCounter(int value) {
+    counter = value;
+    }
+
+
+    // getters
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public double getPrice() {
+        return price;
+    }
 
     @Override
     public String toString() {

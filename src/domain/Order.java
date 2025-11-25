@@ -1,19 +1,29 @@
 package domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Order {
+public class Order implements Serializable {
+
+    // variables
     private static int counter = 1;
     private int id;
     private Customer customer;
     private ArrayList<MenuItem> items = new ArrayList<>();
     private boolean closed = false;
 
+    // constructor
     public Order(Customer customer) {
         this.id = counter++;
         this.customer = customer;
     }
 
+    // setters
+    public static void setCounter(int value){
+        counter = value;
+    }
+
+    // getters
     public int getId() {
         return id;
     }
@@ -26,6 +36,7 @@ public class Order {
         return items;
     }
 
+    // methods for add/remove list
     public void addItem(MenuItem item) {
         items.add(item);
     }
@@ -36,7 +47,8 @@ public class Order {
 
     public double calculateTotal() {
         double total = 0;
-        for (MenuItem m : items) total += m.getPrice();
+        for (MenuItem m : items)
+            total += m.getPrice();
         return total;
     }
 
@@ -47,10 +59,10 @@ public class Order {
     @Override
     public String toString() {
         return "Order (id=" + id +
-               ", customer=" + customer.getName() +
-               ", identification=" + customer.getIdentificationNumber() +
-               ", total=" + calculateTotal() +
-               ", closed=" + closed +
-               " )";
+                ", customer=" + customer.getName() +
+                ", identification=" + customer.getIdentificationNumber() +
+                ", total=" + calculateTotal() +
+                ", closed=" + closed +
+                " )";
     }
 }

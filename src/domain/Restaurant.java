@@ -1,8 +1,11 @@
 package domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Restaurant {
+public class Restaurant implements Serializable {
+
+    // variables
     private String name;
     private ArrayList<MenuItem> menu = new ArrayList<>();
     private ArrayList<Table> tables = new ArrayList<>();
@@ -18,7 +21,7 @@ public class Restaurant {
     public Customer addCustomer(String name, String identificationNumber) {
         Customer c = new Customer(name, identificationNumber);
 
-        // Asignar primera mesa libre
+        // assign a free table
         for (Table t : tables) {
             if (!t.isOccupied()) {
                 t.setOccupied(true);
@@ -35,7 +38,7 @@ public class Restaurant {
         return customers;
     }
 
-    // NUEVO: buscar customer por identificationNumber
+    // search customer by identification number
     public Customer getCustomerByIdentification(String idNumber) {
         for (Customer c : customers) {
             if (c.getIdentificationNumber().equals(idNumber)) {
@@ -47,10 +50,11 @@ public class Restaurant {
 
     // ---------------- ORDERS ----------------
 
-    // AHORA CREA LA ORDEN BUSCANDO POR identificationNumber
+    // create the order by searching for identificationNumber
     public Order createOrder(String identificationNumber) {
         Customer c = getCustomerByIdentification(identificationNumber);
-        if (c == null) return null;
+        if (c == null)
+            return null;
 
         Order o = new Order(c);
         orders.add(o);
@@ -63,7 +67,8 @@ public class Restaurant {
 
     public Order getOrderById(int id) {
         for (Order o : orders) {
-            if (o.getId() == id) return o;
+            if (o.getId() == id)
+                return o;
         }
         return null;
     }
@@ -100,7 +105,8 @@ public class Restaurant {
 
     public boolean addItemToOrder(int orderId, int menuItemId) {
         Order o = getOrderById(orderId);
-        if (o == null) return false;
+        if (o == null)
+            return false;
 
         for (MenuItem m : menu) {
             if (m.getId() == menuItemId) {
@@ -113,7 +119,8 @@ public class Restaurant {
 
     public void removeItemFromOrder(int orderId, int menuId, int qty) {
         Order o = getOrderById(orderId);
-        if (o == null) return;
+        if (o == null)
+            return;
 
         MenuItem toRemove = null;
         for (MenuItem m : o.getItems()) {
@@ -132,9 +139,48 @@ public class Restaurant {
 
     public boolean closeOrder(int orderId) {
         Order o = getOrderById(orderId);
-        if (o == null) return false;
+        if (o == null)
+            return false;
 
         o.closeOrder();
         return true;
     }
+
+
+    // fix counters
+    public void fixCounters() {
+    // Fix MenuItem counter
+    int maxMenuId = 0;
+    for (MenuItem item : menu) {
+        if (item.getId() > maxMenuId)
+            maxMenuId = item.getId();
+    }
+    MenuItem.setCounter(maxMenuId + 1);
+
+    // Fix Table counter
+    int maxTableId = 0;
+    for (Table t : tables) {
+        if (t.getId() > maxTableId)
+            maxTableId = t.getId();
+    }
+    Table.setCounter(maxTableId + 1);
+
+    // Fix Customer counter
+    int maxCustomerId = 0;
+    for (Customer c : customers) {
+        if (c.getId() > maxCustomerId)
+            maxCustomerId = c.getId();
+    }
+    Customer.setCounter(maxCustomerId + 1);
+
+    // Fix Order counter
+    int maxOrderId = 0;
+    for (Order o : orders) {
+        if (o.getId() > maxOrderId)
+            maxOrderId = o.getId();
+    }
+    Order.setCounter(maxOrderId + 1);
+}
+
+
 }

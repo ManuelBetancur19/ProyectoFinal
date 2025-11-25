@@ -1,18 +1,32 @@
 package domain;
 
-public class Customer {
+import java.io.Serializable;
+
+public class Customer implements Serializable {
+
+    // variables
     private static int counter = 1;
-    private int id;  
+    private int id;
     private String name;
-    private String identificationNumber; // ← antes era phone
+    private String identificationNumber;
     private Table assignedTable;
 
+    // constructor
     public Customer(String name, String identificationNumber) {
         this.id = counter++;
         this.name = name;
         this.identificationNumber = identificationNumber;
     }
 
+    // setters
+    public void setAssignedTable(Table assignedTable) {
+        this.assignedTable = assignedTable;
+    }
+    public static void setCounter(int value){
+        counter = value;
+    }
+
+    // getters
     public int getId() {
         return id;
     }
@@ -29,16 +43,12 @@ public class Customer {
         return assignedTable;
     }
 
-    public void setAssignedTable(Table assignedTable) {
-        this.assignedTable = assignedTable;
-    }
-
     @Override
     public String toString() {
         return "Customer ( id=" + id +
-               ", name='" + name + '\'' +
-               ", identificationNumber='" + identificationNumber + '\'' +
-               ", table=" + (assignedTable != null ? assignedTable.getId() : "None") +
-               " )";
+                ", name='" + name + '\'' +
+                ", identificationNumber='" + identificationNumber + '\'' +
+                ", table=" + (assignedTable != null ? assignedTable.getId() : "None") +
+                " )";
     }
 }
