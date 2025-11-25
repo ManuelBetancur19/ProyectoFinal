@@ -46,11 +46,11 @@ public class Order {
 
     @Override
     public String toString() {
-        return "Order { id=" + id +
+        return "Order (id=" + id +
                ", customer=" + customer.getName() +
                ", identification=" + customer.getIdentificationNumber() +
                ", total=" + calculateTotal() +
                ", closed=" + closed +
-               " }";
+               " )";
     }
 }

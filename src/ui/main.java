@@ -223,10 +223,10 @@ public class Main {
                             System.out.println("Customers:");
                             for (Customer cu : r.getCustomers()) System.out.println(cu);
 
-                            System.out.print("Enter customer identification number: "); // CAMBIO
+                            System.out.print("Enter customer identification number: "); 
                             String identification = scanner.nextLine();
 
-                            Order o = r.createOrder(identification); // CAMBIO
+                            Order o = r.createOrder(identification);
                             System.out.println(o != null ? "Order created: " + o : "Customer not found.");
                         } catch (Exception e) {
                             System.out.println("Error creating order.");
