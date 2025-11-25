@@ -19,9 +19,9 @@ public class Table {
 
     @Override
     public String toString() {
-        return "Table { id=" + id +
+        return "Table ( id=" + id +
                ", seats=" + seats +
                ", occupied=" + occupied +
-               " }";
+               " )";
     }
 }

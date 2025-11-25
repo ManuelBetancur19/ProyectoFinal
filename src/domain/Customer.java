@@ -35,10 +35,10 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer { id=" + id +
+        return "Customer ( id=" + id +
                ", name='" + name + '\'' +
                ", identificationNumber='" + identificationNumber + '\'' +
                ", table=" + (assignedTable != null ? assignedTable.getId() : "None") +
-               " }";
+               " )";
     }
 }

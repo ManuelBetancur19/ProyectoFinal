@@ -21,6 +21,6 @@ public class MenuItem {
 
     @Override
     public String toString() {
-        return "MenuItem { id=" + id + ", name='" + name + "', price=" + price + " }";
+        return "MenuItem ( id=" + id + ", name='" + name + "', price=" + price + " )";
     }
 }
