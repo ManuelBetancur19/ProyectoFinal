@@ -8,7 +8,7 @@ public class Customer implements Serializable {
     private static int counter = 1;
     private int id;
     private String name;
-    private String identificationNumber;
+    private String identificationNumber; // ← antes era phone
     private Table assignedTable;
 
     // constructor

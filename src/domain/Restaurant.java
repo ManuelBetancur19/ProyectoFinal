@@ -16,21 +16,44 @@ public class Restaurant implements Serializable {
         this.name = name;
     }
 
+    // ---------------- TABLE HELPERS (para el MAIN) ----------------
+
+    // retorna la primera mesa libre
+    public Table getFirstFreeTable() {
+        for (Table t : tables) {
+            if (!t.isOccupied()) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    // liberar una mesa al cerrar una orden
+    public void freeTable(int tableId) {
+        for (Table t : tables) {
+            if (t.getId() == tableId) {
+                t.setOccupied(false);
+                return;
+            }
+        }
+    }
+
     // ---------------- CUSTOMERS ----------------
 
     public Customer addCustomer(String name, String identificationNumber) {
-        Customer c = new Customer(name, identificationNumber);
 
-        // assign a free table
-        for (Table t : tables) {
-            if (!t.isOccupied()) {
-                t.setOccupied(true);
-                c.setAssignedTable(t);
-                break;
-            }
+        // Buscar mesa libre
+        Table freeTable = getFirstFreeTable();
+        if (freeTable == null) {
+            return null; // el MAIN ya maneja esto
         }
 
+        Customer c = new Customer(name, identificationNumber);
+        c.setAssignedTable(freeTable);
+
+        freeTable.setOccupied(true);
         customers.add(c);
+
         return c;
     }
 
@@ -38,7 +61,6 @@ public class Restaurant implements Serializable {
         return customers;
     }
 
-    // search customer by identification number
     public Customer getCustomerByIdentification(String idNumber) {
         for (Customer c : customers) {
             if (c.getIdentificationNumber().equals(idNumber)) {
@@ -50,7 +72,6 @@ public class Restaurant implements Serializable {
 
     // ---------------- ORDERS ----------------
 
-    // create the order by searching for identificationNumber
     public Order createOrder(String identificationNumber) {
         Customer c = getCustomerByIdentification(identificationNumber);
         if (c == null)
@@ -146,41 +167,35 @@ public class Restaurant implements Serializable {
         return true;
     }
 
+    // ---------------- COUNTER FIX ----------------
 
-    // fix counters
     public void fixCounters() {
-    // Fix MenuItem counter
-    int maxMenuId = 0;
-    for (MenuItem item : menu) {
-        if (item.getId() > maxMenuId)
-            maxMenuId = item.getId();
+        int maxMenuId = 0;
+        for (MenuItem item : menu) {
+            if (item.getId() > maxMenuId)
+                maxMenuId = item.getId();
+        }
+        MenuItem.setCounter(maxMenuId + 1);
+
+        int maxTableId = 0;
+        for (Table t : tables) {
+            if (t.getId() > maxTableId)
+                maxTableId = t.getId();
+        }
+        Table.setCounter(maxTableId + 1);
+
+        int maxCustomerId = 0;
+        for (Customer c : customers) {
+            if (c.getId() > maxCustomerId)
+                maxCustomerId = c.getId();
+        }
+        Customer.setCounter(maxCustomerId + 1);
+
+        int maxOrderId = 0;
+        for (Order o : orders) {
+            if (o.getId() > maxOrderId)
+                maxOrderId = o.getId();
+        }
+        Order.setCounter(maxOrderId + 1);
     }
-    MenuItem.setCounter(maxMenuId + 1);
-
-    // Fix Table counter
-    int maxTableId = 0;
-    for (Table t : tables) {
-        if (t.getId() > maxTableId)
-            maxTableId = t.getId();
-    }
-    Table.setCounter(maxTableId + 1);
-
-    // Fix Customer counter
-    int maxCustomerId = 0;
-    for (Customer c : customers) {
-        if (c.getId() > maxCustomerId)
-            maxCustomerId = c.getId();
-    }
-    Customer.setCounter(maxCustomerId + 1);
-
-    // Fix Order counter
-    int maxOrderId = 0;
-    for (Order o : orders) {
-        if (o.getId() > maxOrderId)
-            maxOrderId = o.getId();
-    }
-    Order.setCounter(maxOrderId + 1);
-}
-
-
 }
