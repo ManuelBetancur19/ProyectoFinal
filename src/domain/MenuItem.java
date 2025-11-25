@@ -1,93 +1,25 @@
 package domain;
 
-import java.io.Serializable;
+public class MenuItem {
+    private final int id;
+    private final String name;
+    private final String description;
+    private final double price;
 
-public class MenuItem implements Serializable {
-
-    //variables//
-    private int idItem;
-    private float priceItem;
-    private String nameItem;
-    private String descriptionItem;
-    private String categoryItem;
-    private boolean availableItem;
-    
-    //Constructors//
-    public MenuItem(int idItem, float priceItem, String nameItem, String descriptionItem, String categoryItem, boolean availableItem){
-        setAvailableItem(availableItem);
-        setCategoryItem(categoryItem);
-        setDescriptionItem(descriptionItem);
-        setIdItem(idItem);
-        setNameItem(nameItem);
-        setPriceItem(priceItem);
-    }
-    public MenuItem(){
-        idItem = 1;
-        priceItem = 10000;
-        nameItem = "Sin nombrar";
-        descriptionItem = "Sin descripcion";
-        categoryItem = "Sin Categoria";
-        availableItem = false;
-    }
-    
-    //setters//
-    public void setIdItem(int idItem){
-        if(idItem <= 0){
-            this.idItem = 1;
-        }else{
-            this.idItem = idItem;
-        }
-    }
-    public void setPriceItem(float priceItem){
-        if(priceItem <= 0){
-            this.priceItem = 1;
-        }else{
-            this.priceItem = priceItem;
-        }
-    }
-    public void setNameItem(String nameItem){
-        if(nameItem.isEmpty()){
-            this.nameItem = "Desconocido";
-        }else{
-            this.nameItem = nameItem;
-        }
-    }
-    public void setDescriptionItem(String descriptionItem){
-        if(descriptionItem.isEmpty()){
-            this.descriptionItem = "Sin descripción";
-        }else{
-            this.descriptionItem = descriptionItem;
-        }
-    }
-    public void setCategoryItem(String categoryItem){
-        if(categoryItem.isEmpty()){
-            this.categoryItem = "Desconocido";
-        }else{
-            this.categoryItem = categoryItem;
-        }
-    }
-    public void setAvailableItem(boolean availableItem){
-        this.availableItem = availableItem;
+    public MenuItem(int id, String name, String description, double price) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
     }
 
-    //getters//
-    public int getIdItem(){
-        return idItem;
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public String getDescription() { return description; }
+    public double getPrice() { return price; }
+
+    @Override
+    public String toString() {
+        return id + " -> " + name + " | $" + price;
     }
-    public float getPriceItem(){
-        return priceItem;
-    }
-    public String getNameItem(){
-        return nameItem;
-    }
-    public String getDescriptionItem(){
-        return descriptionItem;
-    }
-    public String getCategoryItem(){
-        return categoryItem;
-    }
-    public boolean getAvailableItem(){
-        return availableItem;
-    }
-    
 }

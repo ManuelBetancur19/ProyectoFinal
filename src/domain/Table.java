@@ -1,28 +1,23 @@
 package domain;
 
-import java.io.Serializable;
+public class Table {
+    private final int id;
+    private final int seats;
+    private boolean occupied;
 
-public class Table implements Serializable {
-
-    //information of table//
-    private int tableNumber;
-    //MAS ATRIBUTOS
-    
-    //constructor//
-    public Table(int tableNumber){
-        this.tableNumber = tableNumber;
+    public Table(int id, int seats) {
+        this.id = id;
+        this.seats = seats;
+        this.occupied = false;
     }
 
-    //setter//
-    public void setTableNumber(int tableNumber){
-        if (tableNumber > 0){
-            this.tableNumber = tableNumber;
-        }else{
-            this.tableNumber = 0;
-        }
-    }
-    //getter//
-    public int getTableNumber(){
-        return tableNumber;
+    public int getId() { return id; }
+    public int getSeats() { return seats; }
+    public boolean isOccupied() { return occupied; }
+    public void setOccupied(boolean occupied) { this.occupied = occupied; }
+
+    @Override
+    public String toString() {
+        return id + " -> Seats: " + seats + " | Occupied: " + occupied;
     }
 }
