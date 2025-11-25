@@ -1,22 +1,33 @@
 package ui;
 
+import data.*;
 import domain.*;
 import java.util.Scanner;
 
 public class Main {
-    private static Scanner scanner = new Scanner(System.in);
+    static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         try {
-            Restaurant restaurant = new Restaurant("Delicias Colombianas");
 
-            // Datos iniciales para probar
-            restaurant.addTable(2);
-            restaurant.addTable(4);
-            restaurant.addTable(6);
+            Restaurant restaurant = RestaurantStorage.load("data");
+            if (restaurant == null) {
+                restaurant = new Restaurant("Colombian Delights");
+            } else {
+                restaurant.fixCounters();
+            }
 
-            restaurant.addMenuItem("Bandeja Paisa", "Carne, frijoles, arroz, huevo", 35000);
-            restaurant.addMenuItem("Ajiaco", "Sopa típica", 25000);
+            // initial data to test
+            if (restaurant.getTables().isEmpty()) {
+                restaurant.addTable(2);
+                restaurant.addTable(4);
+                restaurant.addTable(6);
+            }
+
+            if (restaurant.getMenu().isEmpty()) {
+                restaurant.addMenuItem("Bandeja Paisa", "Carne, frijoles, arroz, huevo", 35000);
+                restaurant.addMenuItem("Ajiaco", "Sopa típica", 25000);
+            }
 
             boolean running = true;
             while (running) {
@@ -31,12 +42,24 @@ public class Main {
                     String option = scanner.nextLine();
 
                     switch (option) {
-                        case "1": manageMenu(restaurant); break;
-                        case "2": manageTables(restaurant); break;
-                        case "3": manageCustomers(restaurant); break;
-                        case "4": manageOrders(restaurant); break;
-                        case "5": running = false; break;
-                        default: System.out.println("Invalid option.");
+                        case "1":
+                            manageMenu(restaurant);
+                            break;
+                        case "2":
+                            manageTables(restaurant);
+                            break;
+                        case "3":
+                            manageCustomers(restaurant);
+                            break;
+                        case "4":
+                            manageOrders(restaurant);
+                            break;
+                        case "5":
+                            running = false;
+                            RestaurantStorage.save(restaurant, "data");
+                            break;
+                        default:
+                            System.out.println("Invalid option.");
                     }
                 } catch (Exception e) {
                     System.out.println("Error: " + e.getMessage());
@@ -98,8 +121,11 @@ public class Main {
                         }
                         break;
 
-                    case "4": loop = false; break;
-                    default: System.out.println("Invalid option.");
+                    case "4":
+                        loop = false;
+                        break;
+                    default:
+                        System.out.println("Invalid option.");
                 }
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
@@ -110,7 +136,8 @@ public class Main {
     private static void listMenuItems(Restaurant r) {
         try {
             System.out.println("\n--- MENU ITEMS ---");
-            for (MenuItem m : r.getMenu()) System.out.println(m);
+            for (MenuItem m : r.getMenu())
+                System.out.println(m);
         } catch (Exception e) {
             System.out.println("Error printing menu.");
         }
@@ -143,14 +170,18 @@ public class Main {
                     case "2":
                         try {
                             System.out.println("\n--- TABLES ---");
-                            for (Table table : r.getTables()) System.out.println(table);
+                            for (Table table : r.getTables())
+                                System.out.println(table);
                         } catch (Exception e) {
                             System.out.println("Error listing tables.");
                         }
                         break;
 
-                    case "3": loop = false; break;
-                    default: System.out.println("Invalid option.");
+                    case "3":
+                        loop = false;
+                        break;
+                    default:
+                        System.out.println("Invalid option.");
                 }
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
@@ -175,7 +206,7 @@ public class Main {
                         try {
                             System.out.print("Enter customer name: ");
                             String name = scanner.nextLine();
-                            System.out.print("Enter identification number: "); // CAMBIO
+                            System.out.print("Enter identification number: ");
                             String idNumber = scanner.nextLine();
                             Customer c = r.addCustomer(name, idNumber);
                             System.out.println("Added: " + c);
@@ -187,14 +218,18 @@ public class Main {
                     case "2":
                         try {
                             System.out.println("\n--- CUSTOMERS ---");
-                            for (Customer cu : r.getCustomers()) System.out.println(cu);
+                            for (Customer cu : r.getCustomers())
+                                System.out.println(cu);
                         } catch (Exception e) {
                             System.out.println("Error listing customers.");
                         }
                         break;
 
-                    case "3": loop = false; break;
-                    default: System.out.println("Invalid option.");
+                    case "3":
+                        loop = false;
+                        break;
+                    default:
+                        System.out.println("Invalid option.");
                 }
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
@@ -220,11 +255,11 @@ public class Main {
                 switch (op) {
                     case "1":
                         try {
-                            System.out.println("Customers:");
-                            for (Customer cu : r.getCustomers()) System.out.println(cu);
-
-                            System.out.print("Enter customer identification number: "); 
+                            System.out.print("Enter customer identification number: ");
                             String identification = scanner.nextLine();
+                            if (identification == null) {
+                                identification = "";
+                            }
 
                             Order o = r.createOrder(identification);
                             System.out.println(o != null ? "Order created: " + o : "Customer not found.");
@@ -236,19 +271,22 @@ public class Main {
                     case "2":
                         try {
                             System.out.println("Orders:");
-                            for (Order or : r.getOrders()) System.out.println(or);
+                            for (Order or : r.getOrders())
+                                System.out.println(or);
 
                             System.out.print("Enter order ID: ");
                             int oid = Integer.parseInt(scanner.nextLine());
 
                             System.out.println("Menu items:");
-                            for (MenuItem mi : r.getMenu()) System.out.println(mi);
+                            for (MenuItem mi : r.getMenu())
+                                System.out.println(mi);
 
                             System.out.print("Enter menu item ID to add (0 to stop): ");
                             while (true) {
                                 try {
                                     int mid = Integer.parseInt(scanner.nextLine());
-                                    if (mid == 0) break;
+                                    if (mid == 0)
+                                        break;
 
                                     boolean ok = r.addItemToOrder(oid, mid);
                                     System.out.println(ok ? "Item added." : "Failed to add (order or item not found).");
@@ -265,7 +303,8 @@ public class Main {
                     case "3":
                         try {
                             System.out.println("Orders:");
-                            for (Order or : r.getOrders()) System.out.println(or);
+                            for (Order or : r.getOrders())
+                                System.out.println(or);
 
                             System.out.print("Enter order ID: ");
                             int oid2 = Integer.parseInt(scanner.nextLine());
@@ -278,7 +317,8 @@ public class Main {
                                 break;
                             }
 
-                            for (MenuItem mi : ord.getItems()) System.out.println(mi);
+                            for (MenuItem mi : ord.getItems())
+                                System.out.println(mi);
 
                             System.out.print("Enter menu item ID to remove: ");
                             int rid = Integer.parseInt(scanner.nextLine());
@@ -295,16 +335,17 @@ public class Main {
                     case "4":
                         try {
                             System.out.println("Orders:");
-                            for (Order or : r.getOrders()) System.out.println(or);
+                            for (Order or : r.getOrders())
+                                System.out.println(or);
 
                             System.out.print("Enter order ID to close: ");
                             int oid3 = Integer.parseInt(scanner.nextLine());
-
                             boolean closed = r.closeOrder(oid3);
                             if (closed) {
                                 Order closedOrder = r.getOrderById(oid3);
                                 System.out.println("Order closed. Total: $" + closedOrder.calculateTotal());
-                            } else System.out.println("Order not found.");
+                            } else
+                                System.out.println("Order not found.");
                         } catch (Exception e) {
                             System.out.println("Error closing order.");
                         }
@@ -313,14 +354,18 @@ public class Main {
                     case "5":
                         try {
                             System.out.println("\n--- ORDERS ---");
-                            for (Order or : r.getOrders()) System.out.println(or);
+                            for (Order or : r.getOrders())
+                                System.out.println(or);
                         } catch (Exception e) {
                             System.out.println("Error listing orders.");
                         }
                         break;
 
-                    case "6": loop = false; break;
-                    default: System.out.println("Invalid option.");
+                    case "6":
+                        loop = false;
+                        break;
+                    default:
+                        System.out.println("Invalid option.");
                 }
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
