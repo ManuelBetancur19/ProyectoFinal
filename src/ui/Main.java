@@ -167,8 +167,12 @@ public class Main {
                         try {
                             System.out.print("Enter number of seats: ");
                             int seats = Integer.parseInt(scanner.nextLine());
-                            Table t = r.addTable(seats);
-                            System.out.println("Added table: " + t);
+                            if (seats <= 0) {
+                                System.out.print("Number of seats cannot be negative");
+                            } else {
+                                Table t = r.addTable(seats);
+                                System.out.println("Added table: " + t);
+                            }
                         } catch (Exception e) {
                             System.out.println("Error adding table.");
                         }
@@ -255,6 +259,7 @@ public class Main {
     // ---------------- ORDERS ----------------
     private static void manageOrders(Restaurant r) {
         boolean loop = true;
+        Order currentOrder = null;
         while (loop) {
             try {
                 System.out.println("\n--- ORDERS MANAGEMENT ---");
@@ -276,8 +281,15 @@ public class Main {
                                 identification = "";
                             }
 
-                            Order o = r.createOrder(identification);
-                            System.out.println(o != null ? "Order created: " + o : "Customer not found.");
+                            Order active = r.getActiveOrderByCustomer(identification);
+                            if (active != null) {
+                                System.out.println("\"Error: This customer already has an active order. Order ID: "
+                                        + active.getId());
+                            } else {
+                                Order o = r.createOrder(identification);
+                                currentOrder = o;
+                                System.out.println(o != null ? "Order created: " + o : "Customer not found.");
+                            }
                         } catch (Exception e) {
                             System.out.println("Error creating order.");
                         }
@@ -292,6 +304,12 @@ public class Main {
                             System.out.print("Enter order ID: ");
                             int oid = Integer.parseInt(scanner.nextLine());
 
+                            Order ord = r.getOrderById(oid);
+                            if (ord == null) {
+                                System.out.println("This ID does not belong to any order.");
+                                break;
+                            }
+                            
                             System.out.println("Menu items:");
                             for (MenuItem mi : r.getMenu())
                                 System.out.println(mi);
@@ -392,6 +410,10 @@ public class Main {
                         break;
 
                     case "6":
+                        if (currentOrder != null && currentOrder.calculateTotal() == 0) {
+                            r.deleteOrder(currentOrder.getId());
+                            System.out.println("Empty order remove");
+                        }
                         loop = false;
                         break;
                     default:

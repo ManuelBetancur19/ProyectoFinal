@@ -19,7 +19,7 @@ public class Order implements Serializable {
     }
 
     // setters
-    public static void setCounter(int value){
+    public static void setCounter(int value) {
         counter = value;
     }
 
@@ -34,6 +34,10 @@ public class Order implements Serializable {
 
     public ArrayList<MenuItem> getItems() {
         return items;
+    }
+
+    public boolean isClosed() {
+        return closed;
     }
 
     // methods for add/remove list
@@ -58,10 +62,8 @@ public class Order implements Serializable {
 
     @Override
     public String toString() {
-        return "Order (id=" + id +
-                ", customer=" + customer.getName() +
-                ", identification=" + customer.getIdentificationNumber() +
-                ", total=" + calculateTotal() +
+        return "Order (id=" + id + ", customer=" + customer.getName() + ", identification="
+                + customer.getIdentificationNumber() + ", total=" + calculateTotal() +
                 ", closed=" + closed +
                 " )";
     }

@@ -22,7 +22,8 @@ public class Customer implements Serializable {
     public void setAssignedTable(Table assignedTable) {
         this.assignedTable = assignedTable;
     }
-    public static void setCounter(int value){
+
+    public static void setCounter(int value) {
         counter = value;
     }
 
@@ -45,10 +46,7 @@ public class Customer implements Serializable {
 
     @Override
     public String toString() {
-        return "Customer ( id=" + id +
-                ", name='" + name + '\'' +
-                ", identificationNumber='" + identificationNumber + '\'' +
-                ", table=" + (assignedTable != null ? assignedTable.getId() : "None") +
-                " )";
+        return "Customer ( id=" + id + ", name='" + name + '\'' + ", identificationNumber='" + identificationNumber
+                + '\'' + ", table=" + (assignedTable != null ? assignedTable.getId() : "None") + " )";
     }
 }
