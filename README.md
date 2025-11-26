@@ -26,3 +26,7 @@ El objetivo del sistema es ofrecer una herramienta práctica para organizar las 
 - Eliminar ítems de la orden.
 - Mostrar el resumen de la orden.
 - Listar el menú o las órdenes existentes.
+
+## Ejemplos de entrada y salida
+Registrar un cliente y asignarle una mesa:
+`Enter customer identification number: Hermenegelido`
