@@ -25,6 +25,7 @@ public class Table implements Serializable {
         counter = value;
     }
 
+
     // getters
     public int getId() {
         return id;

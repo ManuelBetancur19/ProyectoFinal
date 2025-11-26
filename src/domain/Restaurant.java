@@ -16,9 +16,9 @@ public class Restaurant implements Serializable {
         this.name = name;
     }
 
-    // ---------------- TABLE HELPERS (para el MAIN) ----------------
+    // ---------------- TABLE HELPERS ----------------
 
-    // retorna la primera mesa libre
+    // returns the first free table
     public Table getFirstFreeTable() {
         for (Table t : tables) {
             if (!t.isOccupied()) {
@@ -28,7 +28,7 @@ public class Restaurant implements Serializable {
         return null;
     }
 
-    // liberar una mesa al cerrar una orden
+    // frees up a table when an order is closed
     public void freeTable(int tableId) {
         for (Table t : tables) {
             if (t.getId() == tableId) {
@@ -42,10 +42,9 @@ public class Restaurant implements Serializable {
 
     public Customer addCustomer(String name, String identificationNumber) {
 
-        // Buscar mesa libre
         Table freeTable = getFirstFreeTable();
         if (freeTable == null) {
-            return null; // el MAIN ya maneja esto
+            return null;
         }
 
         Customer c = new Customer(name, identificationNumber);
@@ -65,6 +64,15 @@ public class Restaurant implements Serializable {
         for (Customer c : customers) {
             if (c.getIdentificationNumber().equals(idNumber)) {
                 return c;
+            }
+        }
+        return null;
+    }
+
+    public Order getActiveOrderByCustomer(String identification) {
+        for (Order o : orders) {
+            if (o.getCustomer().getIdentificationNumber().equals(identification) && !o.isClosed()) {
+                return o;
             }
         }
         return null;
@@ -165,6 +173,10 @@ public class Restaurant implements Serializable {
 
         o.closeOrder();
         return true;
+    }
+
+    public boolean deleteOrder(int id) {
+        return orders.removeIf(o -> o.getId() == id);
     }
 
     // ---------------- COUNTER FIX ----------------
