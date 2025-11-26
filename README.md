@@ -45,7 +45,7 @@ Salidas
 Added: Customer ( id=3, name='Hermenegildo', identificationNumber='1057783425', table=1 )`  
 ```
 
-Crear un ítem del menú y mostrarlo:
+Crear un ítem del menú y mostrarlo:  
 Entradas
 ```
 Enter name: Changua
@@ -57,7 +57,7 @@ Salidas
 Added: MenuItem ( id=1, name='Changua', price=10000.0 )
 ```
 
-Crear una orden y agregar un item:
+Crear una orden y agregar un item:  
 Entradas
 ```
 Enter customer identification number: 1057783425
@@ -71,7 +71,7 @@ Order (id=1, customer=Hermenegildo, identification=1057783425, total=10000.0, cl
 
 ```
 
-Cerrar una orden:
+Cerrar una orden:  
 Entradas
 ```
 Enter order ID to close: 1
