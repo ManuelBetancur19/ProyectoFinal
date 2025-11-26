@@ -29,4 +29,7 @@ El objetivo del sistema es ofrecer una herramienta práctica para organizar las 
 
 ## Ejemplos de entrada y salida
 Registrar un cliente y asignarle una mesa:
-`Enter customer identification number: Hermenegelido`
+`Enter customer name: Hermenegelido
+Enter identification number: 1057783425`
+
+
