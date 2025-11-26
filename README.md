@@ -25,7 +25,4 @@ El objetivo del sistema es ofrecer una herramienta práctica para organizar las 
 - Agregar ítems del menú a la orden.
 - Eliminar ítems de la orden.
 - Mostrar el resumen de la orden.
-
-
-
-Listar el menú o las órdenes existentes.
+- Listar el menú o las órdenes existentes.
