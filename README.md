@@ -33,16 +33,52 @@ Entradas
 ```
 1-Crear mesa  
 Enter number of seats: 4`
-```
-```
+
 `2-Registrar cliente   
 Enter customer name: Hermenegelido  
 Enter identification number: 1057783425`  
 ```
-```
-Salidas  
+
+Salidas
+```  
 `Added table: Table ( id=1, seats=4, occupied=false )  
 Added: Customer ( id=3, name='Hermenegildo', identificationNumber='1057783425', table=1 )`  
+```
+
+Crear un ítem del menú y mostrarlo:
+Entradas
+```
+Enter name: Changua
+Enter description: egg and milk broth       
+Enter price: 10000
+```
+Salidas
+```
+Added: MenuItem ( id=1, name='Changua', price=10000.0 )
+```
+
+Crear una orden y agregar un item:
+Entradas
+```
+Enter customer identification number: 1057783425
+Enter order ID: 1
+Enter menu item ID to add (0 to stop): 1
+Enter menu item ID to add (0 to stop): 0
+```
+Salidas
+```
+Order (id=1, customer=Hermenegildo, identification=1057783425, total=10000.0, closed=false )
+
+```
+
+Cerrar una orden:
+Entradas
+```
+Enter order ID to close: 1
+```
+Salidas
+```
+Order closed. Total: $10000.0
 ```
 
 
