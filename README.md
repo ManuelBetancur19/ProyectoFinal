@@ -28,12 +28,12 @@ El objetivo del sistema es ofrecer una herramienta práctica para organizar las 
 - Listar el menú o las órdenes existentes.
 
 ## Ejemplos de entrada y salida
-Registrar un cliente y asignarle una mesa:
-Entradas
-`Enter customer name: Hermenegelido  
-Enter identification number: 1057783425`
+Registrar un cliente y asignarle una mesa:  
+Entradas  
+`Enter customer name: Hermenegelido` 
+`Enter identification number: 1057783425`  
 
-Salidas
+Salidas  
 `Added: Customer ( id=3, name='a', identificationNumber='1', table=1 )`  
 
 
