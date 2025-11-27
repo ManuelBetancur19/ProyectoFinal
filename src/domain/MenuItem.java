@@ -21,9 +21,8 @@ public class MenuItem implements Serializable {
 
     // setters
     public static void setCounter(int value) {
-    counter = value;
+        counter = value;
     }
-
 
     // getters
     public int getId() {
@@ -42,8 +41,18 @@ public class MenuItem implements Serializable {
         return price;
     }
 
+    public int getTimesSold() {
+        return timesSold;
+    }
+
     @Override
     public String toString() {
         return "MenuItem ( id=" + id + ", name='" + name + "', price=" + price + " )";
+    }
+
+    private int timesSold = 0;
+
+    public void incrementSold() {
+        this.timesSold++;
     }
 }

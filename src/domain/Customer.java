@@ -7,6 +7,7 @@ public class Customer implements Serializable {
     // variables
     private static int counter = 1;
     private int id;
+    private int purchases = 0;
     private String name;
     private String identificationNumber; // ← antes era phone
     private Table assignedTable;
@@ -44,9 +45,18 @@ public class Customer implements Serializable {
         return assignedTable;
     }
 
+    public int getPurchases() {
+        return purchases;
+    }
+
     @Override
     public String toString() {
         return "Customer ( id=" + id + ", name='" + name + '\'' + ", identificationNumber='" + identificationNumber
                 + '\'' + ", table=" + (assignedTable != null ? assignedTable.getId() : "None") + " )";
     }
+
+    public void incrementPurchases() {
+        purchases++;
+    }
+
 }

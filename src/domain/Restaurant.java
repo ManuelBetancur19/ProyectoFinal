@@ -78,6 +78,21 @@ public class Restaurant implements Serializable {
         return null;
     }
 
+    public Customer getTopCustomer() {
+        if (customers.isEmpty())
+            return null;
+
+        Customer top = customers.get(0);
+
+        for (Customer c : customers) {
+            if (c.getPurchases() > top.getPurchases()) {
+                top = c;
+            }
+        }
+
+        return top;
+    }
+
     // ---------------- ORDERS ----------------
 
     public Order createOrder(String identificationNumber) {
@@ -116,6 +131,21 @@ public class Restaurant implements Serializable {
 
     public ArrayList<MenuItem> getMenu() {
         return menu;
+    }
+
+    public MenuItem getMostSoldDish() {
+        if (menu.isEmpty())
+            return null;
+
+        MenuItem most = menu.get(0);
+
+        for (MenuItem item : menu) {
+            if (item.getTimesSold() > most.getTimesSold()) {
+                most = item;
+            }
+        }
+
+        return most;
     }
 
     // ---------------- TABLES ----------------
@@ -171,6 +201,14 @@ public class Restaurant implements Serializable {
         if (o == null)
             return false;
 
+        Customer c = o.getCustomer();
+        if (c != null) {
+            c.incrementPurchases();
+        }
+
+        for (MenuItem item : o.getItems()) {
+            item.incrementSold();
+        }
         o.closeOrder();
         return true;
     }

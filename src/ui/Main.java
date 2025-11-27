@@ -37,7 +37,8 @@ public class Main {
                     System.out.println("2. Manage Tables");
                     System.out.println("3. Manage Customers");
                     System.out.println("4. Manage Orders");
-                    System.out.println("5. Exit");
+                    System.out.println("5. Reports");
+                    System.out.println("6. Exit");
                     System.out.print("Choose an option: ");
                     String option = scanner.nextLine();
 
@@ -55,6 +56,9 @@ public class Main {
                             manageOrders(restaurant);
                             break;
                         case "5":
+                            manageReports(restaurant);
+                            break;
+                        case "6":
                             running = false;
                             RestaurantStorage.save(restaurant, "data");
                             break;
@@ -215,7 +219,6 @@ public class Main {
                 switch (op) {
                     case "1":
                         try {
-                            // ---- FIX: No añadir si no hay mesas libres ----
                             Table free = r.getFirstFreeTable();
                             if (free == null) {
                                 System.out.println("All tables are occupied. Cannot add customer.");
@@ -227,8 +230,13 @@ public class Main {
                             System.out.print("Enter identification number: ");
                             String idNumber = scanner.nextLine();
 
-                            Customer c = r.addCustomer(name, idNumber);
-                            System.out.println("Added: " + c);
+                            Customer exists = r.getCustomerByIdentification(idNumber);
+                            if (exists != null) {
+                                System.out.println("Error: A customer with that ID already exists.");
+                            } else {
+                                Customer c = r.addCustomer(name, idNumber);
+                                System.out.println("Added: " + c);
+                            }
                         } catch (Exception e) {
                             System.out.println("Error adding customer.");
                         }
@@ -309,7 +317,7 @@ public class Main {
                                 System.out.println("This ID does not belong to any order.");
                                 break;
                             }
-                            
+
                             System.out.println("Menu items:");
                             for (MenuItem mi : r.getMenu())
                                 System.out.println(mi);
@@ -350,16 +358,20 @@ public class Main {
                                 break;
                             }
 
-                            for (MenuItem mi : ord.getItems())
-                                System.out.println(mi);
+                            if (ord.getItems().isEmpty()) {
+                                System.out.println("The order has no items to remove");
+                            } else {
+                                for (MenuItem mi : ord.getItems())
+                                    System.out.println(mi);
 
-                            System.out.print("Enter menu item ID to remove: ");
-                            int rid = Integer.parseInt(scanner.nextLine());
-                            System.out.print("How many to remove?: ");
-                            int qty = Integer.parseInt(scanner.nextLine());
+                                System.out.print("Enter menu item ID to remove: ");
+                                int rid = Integer.parseInt(scanner.nextLine());
+                                System.out.print("How many to remove?: ");
+                                int qty = Integer.parseInt(scanner.nextLine());
 
-                            r.removeItemFromOrder(oid2, rid, qty);
-                            System.out.println("Removed (if present).");
+                                r.removeItemFromOrder(oid2, rid, qty);
+                                System.out.println("Removed (if present).");
+                            }
                         } catch (Exception e) {
                             System.out.println("Error removing item.");
                         }
@@ -374,7 +386,6 @@ public class Main {
                             System.out.print("Enter order ID to close: ");
                             int oid3 = Integer.parseInt(scanner.nextLine());
 
-                            // ---- FIX: liberar mesa después de cerrar la orden ----
                             Order order = r.getOrderById(oid3);
                             if (order == null) {
                                 System.out.println("Order not found.");
@@ -384,7 +395,6 @@ public class Main {
                             boolean closed = r.closeOrder(oid3);
 
                             if (closed) {
-                                // Liberar mesa asociada al customer
                                 Customer cust = order.getCustomer();
                                 if (cust != null) {
                                     r.freeTable(cust.getId());
@@ -423,5 +433,56 @@ public class Main {
                 System.out.println("Error: " + e.getMessage());
             }
         }
+    }
+
+    // ---------------- REPORTS ----------------
+    private static void manageReports(Restaurant r) {
+        boolean loop = true;
+
+        while (loop) {
+            try {
+                System.out.println("\n--- REPORTS ---");
+                System.out.println("1. Most Sold Dish");
+                System.out.println("2. Top Customer");
+                System.out.println("3. Back");
+                System.out.print("Choose: ");
+                String op = scanner.nextLine();
+
+                switch (op) {
+                    case "1":
+                        MenuItem most = r.getMostSoldDish();
+                        if (most == null) {
+                            System.out.println("No dishes registered.");
+                        } else {
+                            System.out.println(
+                                    "Most sold dish: " + most.getName() +
+                                            " (sold " + most.getTimesSold() + " times)");
+                        }
+                        break;
+
+                    case "2":
+                        Customer top = r.getTopCustomer();
+                        if (top == null) {
+                            System.out.println("No customers registered.");
+                        } else {
+                            System.out.println(
+                                    "Top customer: " + top.getName() +
+                                            " (purchases: " + top.getPurchases() + ")");
+                        }
+                        break;
+
+                    case "3":
+                        loop = false;
+                        break;
+
+                    default:
+                        System.out.println("Invalid option.");
+                }
+
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        }
+
     }
 }
