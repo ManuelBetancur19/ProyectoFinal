@@ -2,6 +2,8 @@ package domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Restaurant implements Serializable {
 
@@ -10,10 +12,17 @@ public class Restaurant implements Serializable {
     private ArrayList<MenuItem> menu = new ArrayList<>();
     private ArrayList<Table> tables = new ArrayList<>();
     private ArrayList<Customer> customers = new ArrayList<>();
+    private List<Customer> tempCustomers = new ArrayList<>();
     private ArrayList<Order> orders = new ArrayList<>();
+    private ArrayList<Order> activeOrders = new ArrayList<>();
+    private List<Integer> freeOrderIds = new ArrayList<>();
+    private int nextOrderId = 1;
 
     public Restaurant(String name) {
         this.name = name;
+    }
+
+    public Restaurant() {
     }
 
     // ---------------- TABLE HELPERS ----------------
@@ -40,6 +49,10 @@ public class Restaurant implements Serializable {
 
     // ---------------- CUSTOMERS ----------------
 
+    public void setCustomers(ArrayList<Customer> customers) {
+        this.customers = customers;
+    }
+
     public Customer addCustomer(String name, String identificationNumber) {
 
         Table freeTable = getFirstFreeTable();
@@ -51,7 +64,7 @@ public class Restaurant implements Serializable {
         c.setAssignedTable(freeTable);
 
         freeTable.setOccupied(true);
-        customers.add(c);
+        tempCustomers.add(c);
 
         return c;
     }
@@ -69,8 +82,17 @@ public class Restaurant implements Serializable {
         return null;
     }
 
+    private Customer getTempCustomerById(String id) {
+        for (Customer c : tempCustomers) {
+            if (c.getIdentificationNumber().equals(id)) {
+                return c;
+            }
+        }
+        return null;
+    }
+
     public Order getActiveOrderByCustomer(String identification) {
-        for (Order o : orders) {
+        for (Order o : activeOrders) {
             if (o.getCustomer().getIdentificationNumber().equals(identification) && !o.isClosed()) {
                 return o;
             }
@@ -94,15 +116,26 @@ public class Restaurant implements Serializable {
     }
 
     // ---------------- ORDERS ----------------
+    public void setOrders(ArrayList<Order> orders) {
+        this.orders = orders;
+    }
 
     public Order createOrder(String identificationNumber) {
         Customer c = getCustomerByIdentification(identificationNumber);
+        if (c == null) {
+            c = getTempCustomerById(identificationNumber);
+        }
         if (c == null)
             return null;
 
-        Order o = new Order(c);
-        orders.add(o);
+        int id = generateOrderId();
+        Order o = new Order(id, c);
+        activeOrders.add(o);
         return o;
+    }
+
+    public ArrayList<Order> getActiveOrders() {
+        return activeOrders;
     }
 
     public ArrayList<Order> getOrders() {
@@ -110,14 +143,28 @@ public class Restaurant implements Serializable {
     }
 
     public Order getOrderById(int id) {
-        for (Order o : orders) {
+        for (Order o : activeOrders)
             if (o.getId() == id)
                 return o;
-        }
+
+        for (Order o : orders)
+            if (o.getId() == id)
+                return o;
+
         return null;
     }
 
+    private int generateOrderId() {
+        if (!freeOrderIds.isEmpty()) {
+            return freeOrderIds.remove(0);
+        }
+        return nextOrderId++;
+    }
+
     // ---------------- MENU ----------------
+    public void setMenu(ArrayList<MenuItem> menu) {
+        this.menu = menu;
+    }
 
     public MenuItem addMenuItem(String name, String desc, double price) {
         MenuItem m = new MenuItem(name, desc, price);
@@ -201,7 +248,14 @@ public class Restaurant implements Serializable {
         if (o == null)
             return false;
 
+        if (o.getItems().isEmpty()) {
+            activeOrders.remove(o);
+            freeOrderIds.add(o.getId());
+            Collections.sort(freeOrderIds);
+            return true;
+        }
         Customer c = o.getCustomer();
+
         if (c != null) {
             c.incrementPurchases();
         }
@@ -209,12 +263,60 @@ public class Restaurant implements Serializable {
         for (MenuItem item : o.getItems()) {
             item.incrementSold();
         }
+
         o.closeOrder();
+        activeOrders.remove(o);
+
+        if (tempCustomers.contains(c)) {
+            tempCustomers.remove(c);
+            customers.add(c);
+        }
+
+        if (c.getAssignedTable() != null) {
+            c.getAssignedTable().setOccupied(false);
+        }
+
+        if (!orders.contains(o)) {
+            orders.add(o);
+        }
+        freeOrderIds.add(o.getId());
+        Collections.sort(freeOrderIds);
+
         return true;
     }
 
     public boolean deleteOrder(int id) {
-        return orders.removeIf(o -> o.getId() == id);
+        freeOrderIds.add(id);
+        Collections.sort(freeOrderIds);
+
+        return activeOrders.removeIf(o -> o.getId() == id);
+    }
+
+    public boolean cancelOrder(int orderId) {
+
+        Order o = getOrderById(orderId);
+
+        if (o == null || o.isClosed()) {
+            return false;
+        }
+
+        activeOrders.remove(o);
+
+        freeOrderIds.add(o.getId());
+        Collections.sort(freeOrderIds);
+
+        Customer c = o.getCustomer();
+
+        if (c != null && c.getAssignedTable() != null) {
+            c.getAssignedTable().setOccupied(false);
+            c.setAssignedTable(null);
+        }
+
+        if (c != null && tempCustomers.contains(c)) {
+            tempCustomers.remove(c);
+        }
+
+        return true;
     }
 
     // ---------------- COUNTER FIX ----------------
@@ -247,5 +349,6 @@ public class Restaurant implements Serializable {
                 maxOrderId = o.getId();
         }
         Order.setCounter(maxOrderId + 1);
+        nextOrderId = maxOrderId + 1;
     }
 }

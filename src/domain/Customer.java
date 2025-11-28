@@ -9,7 +9,7 @@ public class Customer implements Serializable {
     private int id;
     private int purchases = 0;
     private String name;
-    private String identificationNumber; // ← antes era phone
+    private String identificationNumber;
     private Table assignedTable;
 
     // constructor

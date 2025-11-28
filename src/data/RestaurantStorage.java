@@ -1,27 +1,39 @@
 package data;
 
-import domain.Restaurant;
-import java.io.*;
+import domain.*;
+import java.util.ArrayList;
 
-//Storage with restaurant//
 public class RestaurantStorage {
 
-    //  Handles the saving and loading of the Restaurant object using Java serialization.
-    public static void save(Restaurant restaurant, String filename) {
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
-            out.writeObject(restaurant);
-            System.out.println("Restaurant data saved successfully");
-        } catch (IOException e) {
-            System.err.println("Error saving restaurant data " + e.getMessage());
+    public static void saveRestaurant(Restaurant restaurant) {
+        try {
+            CSVManager.saveCustomers(restaurant.getCustomers());
+            CSVManager.saveMenu(restaurant.getMenu());
+            CSVManager.saveOrders(restaurant.getOrders());
+            System.out.println("Restaurant saved successfully");
+        } catch (Exception e) {
+            System.out.println("Error saving restaurant: " + e.getMessage());
         }
     }
 
-    public static Restaurant load(String filename) {
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
-            return (Restaurant) in.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.println("Error loading restaurant data " + e.getMessage());
-            return null;
+    public static Restaurant loadRestaurant() {
+        Restaurant r = new Restaurant();
+
+        try {
+            ArrayList<Customer> customers = CSVManager.loadCustomers();
+            ArrayList<MenuItem> menu = CSVManager.loadMenu();
+            ArrayList<Order> orders = CSVManager.loadOrders(customers);
+
+            r.setCustomers(customers);
+            r.setMenu(menu);
+            r.setOrders(orders);
+
+            System.out.println("Restaurant loaded successfully");
+
+        } catch (Exception e) {
+            System.out.println("Error loading restaurant: " + e.getMessage());
         }
+
+        return r;
     }
 }

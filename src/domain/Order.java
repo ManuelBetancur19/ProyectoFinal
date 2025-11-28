@@ -12,11 +12,15 @@ public class Order implements Serializable {
     private ArrayList<MenuItem> items = new ArrayList<>();
     private boolean closed = false;
 
-    // constructor
-    public Order(Customer customer) {
-        this.id = counter++;
+    public Order(int id, Customer customer) {
+        this.id = id;
         this.customer = customer;
     }
+
+    public Order(Customer customer) {
+    this.id = counter++;
+    this.customer = customer;
+}
 
     // setters
     public static void setCounter(int value) {

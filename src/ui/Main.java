@@ -2,6 +2,7 @@ package ui;
 
 import data.*;
 import domain.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -10,12 +11,8 @@ public class Main {
     public static void main(String[] args) {
         try {
 
-            Restaurant restaurant = RestaurantStorage.load("data");
-            if (restaurant == null) {
-                restaurant = new Restaurant("Colombian Delights");
-            } else {
-                restaurant.fixCounters();
-            }
+            Restaurant restaurant = RestaurantStorage.loadRestaurant();
+            restaurant.fixCounters();
 
             // initial data to test
             if (restaurant.getTables().isEmpty()) {
@@ -60,7 +57,7 @@ public class Main {
                             break;
                         case "6":
                             running = false;
-                            RestaurantStorage.save(restaurant, "data");
+                            RestaurantStorage.saveRestaurant(restaurant);
                             break;
                         default:
                             System.out.println("Invalid option.");
@@ -211,8 +208,7 @@ public class Main {
             try {
                 System.out.println("\n--- CUSTOMER MANAGEMENT ---");
                 System.out.println("1. Add Customer (auto-assign first free table)");
-                System.out.println("2. List Customers");
-                System.out.println("3. Back");
+                System.out.println("2. Back");
                 System.out.print("Choose: ");
                 String op = scanner.nextLine();
 
@@ -243,16 +239,6 @@ public class Main {
                         break;
 
                     case "2":
-                        try {
-                            System.out.println("\n--- CUSTOMERS ---");
-                            for (Customer cu : r.getCustomers())
-                                System.out.println(cu);
-                        } catch (Exception e) {
-                            System.out.println("Error listing customers.");
-                        }
-                        break;
-
-                    case "3":
                         loop = false;
                         break;
                     default:
@@ -275,8 +261,9 @@ public class Main {
                 System.out.println("2. Add Item to Order");
                 System.out.println("3. Remove Item from Order");
                 System.out.println("4. Close Order");
-                System.out.println("5. List Orders");
-                System.out.println("6. Back");
+                System.out.println("5. View active orders");
+                System.out.println("6. Cancel order");
+                System.out.println("7. Back");
                 System.out.print("Choose: ");
                 String op = scanner.nextLine();
 
@@ -305,35 +292,39 @@ public class Main {
 
                     case "2":
                         try {
-                            System.out.println("Orders:");
-                            for (Order or : r.getOrders())
-                                System.out.println(or);
+                            if (r.getActiveOrders().isEmpty()) {
+                                System.out.println("There are no active orders.");
+                            } else {
+                                for (Order or : r.getActiveOrders()) {
+                                    System.out.println(or);
+                                }
+                                System.out.print("Enter order ID: ");
+                                int oid = Integer.parseInt(scanner.nextLine());
 
-                            System.out.print("Enter order ID: ");
-                            int oid = Integer.parseInt(scanner.nextLine());
+                                Order ord = r.getOrderById(oid);
+                                if (ord == null || ord.isClosed()) {
+                                    System.out.println("This ID does not belong to any order.");
+                                    break;
+                                }
 
-                            Order ord = r.getOrderById(oid);
-                            if (ord == null) {
-                                System.out.println("This ID does not belong to any order.");
-                                break;
-                            }
+                                System.out.println("Menu items:");
+                                for (MenuItem mi : r.getMenu())
+                                    System.out.println(mi);
 
-                            System.out.println("Menu items:");
-                            for (MenuItem mi : r.getMenu())
-                                System.out.println(mi);
+                                System.out.print("Enter menu item ID to add (0 to stop): ");
+                                while (true) {
+                                    try {
+                                        int mid = Integer.parseInt(scanner.nextLine());
+                                        if (mid == 0)
+                                            break;
 
-                            System.out.print("Enter menu item ID to add (0 to stop): ");
-                            while (true) {
-                                try {
-                                    int mid = Integer.parseInt(scanner.nextLine());
-                                    if (mid == 0)
-                                        break;
-
-                                    boolean ok = r.addItemToOrder(oid, mid);
-                                    System.out.println(ok ? "Item added." : "Failed to add (order or item not found).");
-                                    System.out.print("Add another (menu ID) or 0 to stop: ");
-                                } catch (Exception e) {
-                                    System.out.println("Invalid input.");
+                                        boolean ok = r.addItemToOrder(oid, mid);
+                                        System.out.println(
+                                                ok ? "Item added." : "Failed to add (order or item not found).");
+                                        System.out.print("Add another (menu ID) or 0 to stop: ");
+                                    } catch (Exception e) {
+                                        System.out.println("Invalid input.");
+                                    }
                                 }
                             }
                         } catch (Exception e) {
@@ -343,10 +334,9 @@ public class Main {
 
                     case "3":
                         try {
-                            System.out.println("Orders:");
-                            for (Order or : r.getOrders())
+                            for (Order or : r.getActiveOrders()) {
                                 System.out.println(or);
-
+                            }
                             System.out.print("Enter order ID: ");
                             int oid2 = Integer.parseInt(scanner.nextLine());
 
@@ -379,10 +369,9 @@ public class Main {
 
                     case "4":
                         try {
-                            System.out.println("Orders:");
-                            for (Order or : r.getOrders())
+                            for (Order or : r.getActiveOrders()) {
                                 System.out.println(or);
-
+                            }
                             System.out.print("Enter order ID to close: ");
                             int oid3 = Integer.parseInt(scanner.nextLine());
 
@@ -396,9 +385,9 @@ public class Main {
 
                             if (closed) {
                                 Customer cust = order.getCustomer();
-                                if (cust != null) {
-                                    r.freeTable(cust.getId());
-                                }
+                                Table t = cust.getAssignedTable();
+                                if (t != null)
+                                    r.freeTable(t.getId());
 
                                 System.out.println("Order closed. Total: $" + order.calculateTotal());
                             } else {
@@ -410,16 +399,46 @@ public class Main {
                         break;
 
                     case "5":
-                        try {
-                            System.out.println("\n--- ORDERS ---");
-                            for (Order or : r.getOrders())
-                                System.out.println(or);
-                        } catch (Exception e) {
-                            System.out.println("Error listing orders.");
+                        System.out.println("\n--- ACTIVE ORDERS ---");
+                        ArrayList<Order> active = r.getActiveOrders();
+
+                        if (active.isEmpty()) {
+                            System.out.println("No active orders.");
+                        } else {
+                            for (Order o : active) {
+                                System.out.println(o);
+                            }
                         }
                         break;
 
                     case "6":
+                        try {
+                            if (r.getActiveOrders().isEmpty()) {
+                                System.out.println("There are no active orders to cancel.");
+                                break;
+                            }
+
+                            System.out.println("--- ACTIVE ORDERS ---");
+                            for (Order or : r.getActiveOrders()) {
+                                System.out.println(or);
+                            }
+
+                            System.out.print("Enter order ID to cancel: ");
+                            int cid = Integer.parseInt(scanner.nextLine());
+
+                            boolean cancelled = r.cancelOrder(cid);
+
+                            if (cancelled) {
+                                System.out.println("Order cancelled successfully.");
+                            } else {
+                                System.out.println("Order not found or already closed.");
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Error cancelling order.");
+                        }
+                        break;
+
+                    case "7":
                         if (currentOrder != null && currentOrder.calculateTotal() == 0) {
                             r.deleteOrder(currentOrder.getId());
                             System.out.println("Empty order remove");
@@ -444,7 +463,9 @@ public class Main {
                 System.out.println("\n--- REPORTS ---");
                 System.out.println("1. Most Sold Dish");
                 System.out.println("2. Top Customer");
-                System.out.println("3. Back");
+                System.out.println("3. List of customers");
+                System.out.println("4. List of orders");
+                System.out.println("5. Back");
                 System.out.print("Choose: ");
                 String op = scanner.nextLine();
 
@@ -472,6 +493,34 @@ public class Main {
                         break;
 
                     case "3":
+                        try {
+                            System.out.println("\n--- CUSTOMERS ---");
+                            if (r.getCustomers().isEmpty()) {
+                                System.out.println("No customers registered.");
+                                break;
+                            }
+                            for (Customer cu : r.getCustomers())
+                                System.out.println(cu);
+                        } catch (Exception e) {
+                            System.out.println("Error listing customers.");
+                        }
+                        break;
+
+                    case "4":
+                        try {
+                            System.out.println("\n--- ORDERS ---");
+                            if (r.getOrders().isEmpty()) {
+                                System.out.println("No orders registered.");
+                                break;
+                            }
+                            for (Order or : r.getOrders())
+                                System.out.println(or);
+                        } catch (Exception e) {
+                            System.out.println("Error listing orders.");
+                        }
+                        break;
+
+                    case "5":
                         loop = false;
                         break;
 
