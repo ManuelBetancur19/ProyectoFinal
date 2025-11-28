@@ -12,7 +12,6 @@ public class Main {
         try {
 
             Restaurant restaurant = RestaurantStorage.loadRestaurant();
-            restaurant.fixCounters();
 
             // initial data to test
             if (restaurant.getTables().isEmpty()) {

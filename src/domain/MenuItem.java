@@ -52,6 +52,7 @@ public class MenuItem implements Serializable {
 
     private int timesSold = 0;
 
+    //increases the number of purchases of a dish
     public void incrementSold() {
         this.timesSold++;
     }

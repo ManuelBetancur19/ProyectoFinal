@@ -54,7 +54,8 @@ public class Customer implements Serializable {
         return "Customer ( id=" + id + ", name='" + name + '\'' + ", identificationNumber='" + identificationNumber
                 + '\'' + ", table=" + (assignedTable != null ? assignedTable.getId() : "None") + " )";
     }
-
+    
+    //increases the number of purchases a customer makes
     public void incrementPurchases() {
         purchases++;
     }

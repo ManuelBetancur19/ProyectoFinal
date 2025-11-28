@@ -35,6 +35,7 @@ public class Table implements Serializable {
         return seats;
     }
 
+    // Returns true if the table is currently occupied
     public boolean isOccupied() {
         return occupied;
     }

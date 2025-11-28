@@ -135,8 +135,6 @@ public class CSVManager {
                 line = br.readLine();
             }
 
-            System.out.println("Orders loaded.");
-
         } catch (Exception e) {
             System.out.println("Error loading orders.");
         }

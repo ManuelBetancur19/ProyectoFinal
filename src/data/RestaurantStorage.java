@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 public class RestaurantStorage {
 
+    //save resturant data
     public static void saveRestaurant(Restaurant restaurant) {
         try {
             CSVManager.saveCustomers(restaurant.getCustomers());
@@ -16,6 +17,7 @@ public class RestaurantStorage {
         }
     }
 
+    //load restaurant data
     public static Restaurant loadRestaurant() {
         Restaurant r = new Restaurant();
 

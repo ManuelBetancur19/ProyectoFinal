@@ -49,10 +49,13 @@ public class Restaurant implements Serializable {
 
     // ---------------- CUSTOMERS ----------------
 
+    // Set the full list of customers
     public void setCustomers(ArrayList<Customer> customers) {
         this.customers = customers;
     }
 
+    // Add a new customer
+    // Automatically assigns the first free table
     public Customer addCustomer(String name, String identificationNumber) {
 
         Table freeTable = getFirstFreeTable();
@@ -69,10 +72,12 @@ public class Restaurant implements Serializable {
         return c;
     }
 
+    // Get the list of all customers
     public ArrayList<Customer> getCustomers() {
         return customers;
     }
 
+    // Find a customer by their identification number
     public Customer getCustomerByIdentification(String idNumber) {
         for (Customer c : customers) {
             if (c.getIdentificationNumber().equals(idNumber)) {
@@ -82,6 +87,7 @@ public class Restaurant implements Serializable {
         return null;
     }
 
+    // Find a temporary customer by identification number
     private Customer getTempCustomerById(String id) {
         for (Customer c : tempCustomers) {
             if (c.getIdentificationNumber().equals(id)) {
@@ -91,6 +97,7 @@ public class Restaurant implements Serializable {
         return null;
     }
 
+    // Get the active order of a customer by their ID
     public Order getActiveOrderByCustomer(String identification) {
         for (Order o : activeOrders) {
             if (o.getCustomer().getIdentificationNumber().equals(identification) && !o.isClosed()) {
@@ -100,6 +107,7 @@ public class Restaurant implements Serializable {
         return null;
     }
 
+    // Get the top customer (most purchases)
     public Customer getTopCustomer() {
         if (customers.isEmpty())
             return null;
@@ -116,10 +124,24 @@ public class Restaurant implements Serializable {
     }
 
     // ---------------- ORDERS ----------------
+
+    // Set the full list of orders
     public void setOrders(ArrayList<Order> orders) {
         this.orders = orders;
     }
 
+    // Fix counters for Order IDs
+    public void fixCounters() {
+        int maxOrderId = 0;
+        for (Order o : orders) {
+            if (o.getId() > maxOrderId)
+                maxOrderId = o.getId();
+        }
+        Order.setCounter(maxOrderId + 1);
+        nextOrderId = maxOrderId + 1;
+    }
+
+    // Create a new order for a customer by their identification number
     public Order createOrder(String identificationNumber) {
         Customer c = getCustomerByIdentification(identificationNumber);
         if (c == null) {
@@ -134,14 +156,17 @@ public class Restaurant implements Serializable {
         return o;
     }
 
+    // Get all active orders
     public ArrayList<Order> getActiveOrders() {
         return activeOrders;
     }
 
+    // Get all orders
     public ArrayList<Order> getOrders() {
         return orders;
     }
 
+    // Find order by Id
     public Order getOrderById(int id) {
         for (Order o : activeOrders)
             if (o.getId() == id)
@@ -154,6 +179,7 @@ public class Restaurant implements Serializable {
         return null;
     }
 
+    // Get an order by its ID
     private int generateOrderId() {
         if (!freeOrderIds.isEmpty()) {
             return freeOrderIds.remove(0);
@@ -162,24 +188,30 @@ public class Restaurant implements Serializable {
     }
 
     // ---------------- MENU ----------------
+
+    // Set the full list of menu items
     public void setMenu(ArrayList<MenuItem> menu) {
         this.menu = menu;
     }
 
+    // Add a new menu item with name, description, and price
     public MenuItem addMenuItem(String name, String desc, double price) {
         MenuItem m = new MenuItem(name, desc, price);
         menu.add(m);
         return m;
     }
 
+    // Delete a menu item by its ID
     public boolean deleteMenuItem(int id) {
         return menu.removeIf(m -> m.getId() == id);
     }
 
+    // Get the full list of menu items
     public ArrayList<MenuItem> getMenu() {
         return menu;
     }
 
+    // Get the menu item that has been sold the most times
     public MenuItem getMostSoldDish() {
         if (menu.isEmpty())
             return null;
@@ -197,18 +229,21 @@ public class Restaurant implements Serializable {
 
     // ---------------- TABLES ----------------
 
+    // Add a new table with a specific number of seats
     public Table addTable(int seats) {
         Table t = new Table(seats);
         tables.add(t);
         return t;
     }
 
+    // Get the full list of tables
     public ArrayList<Table> getTables() {
         return tables;
     }
 
     // ---------------- ORDER ITEMS ----------------
 
+    // Add a MenuItem to an existing order by orderId and menuItemId
     public boolean addItemToOrder(int orderId, int menuItemId) {
         Order o = getOrderById(orderId);
         if (o == null)
@@ -223,6 +258,7 @@ public class Restaurant implements Serializable {
         return false;
     }
 
+    // Remove a quantity of a MenuItem from an order
     public void removeItemFromOrder(int orderId, int menuId, int qty) {
         Order o = getOrderById(orderId);
         if (o == null)
@@ -243,6 +279,7 @@ public class Restaurant implements Serializable {
         }
     }
 
+    // Close an order: update customer purchases, item sold count, free table, move temp customer to main list
     public boolean closeOrder(int orderId) {
         Order o = getOrderById(orderId);
         if (o == null)
@@ -285,6 +322,7 @@ public class Restaurant implements Serializable {
         return true;
     }
 
+    // Delete an order by ID (active orders only)
     public boolean deleteOrder(int id) {
         freeOrderIds.add(id);
         Collections.sort(freeOrderIds);
@@ -292,6 +330,7 @@ public class Restaurant implements Serializable {
         return activeOrders.removeIf(o -> o.getId() == id);
     }
 
+    // Cancel an active order without closing it, free the table and remove temp customer if needed
     public boolean cancelOrder(int orderId) {
 
         Order o = getOrderById(orderId);
@@ -317,38 +356,5 @@ public class Restaurant implements Serializable {
         }
 
         return true;
-    }
-
-    // ---------------- COUNTER FIX ----------------
-
-    public void fixCounters() {
-        int maxMenuId = 0;
-        for (MenuItem item : menu) {
-            if (item.getId() > maxMenuId)
-                maxMenuId = item.getId();
-        }
-        MenuItem.setCounter(maxMenuId + 1);
-
-        int maxTableId = 0;
-        for (Table t : tables) {
-            if (t.getId() > maxTableId)
-                maxTableId = t.getId();
-        }
-        Table.setCounter(maxTableId + 1);
-
-        int maxCustomerId = 0;
-        for (Customer c : customers) {
-            if (c.getId() > maxCustomerId)
-                maxCustomerId = c.getId();
-        }
-        Customer.setCounter(maxCustomerId + 1);
-
-        int maxOrderId = 0;
-        for (Order o : orders) {
-            if (o.getId() > maxOrderId)
-                maxOrderId = o.getId();
-        }
-        Order.setCounter(maxOrderId + 1);
-        nextOrderId = maxOrderId + 1;
     }
 }

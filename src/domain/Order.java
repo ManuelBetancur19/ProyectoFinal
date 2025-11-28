@@ -12,6 +12,7 @@ public class Order implements Serializable {
     private ArrayList<MenuItem> items = new ArrayList<>();
     private boolean closed = false;
 
+    //constructors
     public Order(int id, Customer customer) {
         this.id = id;
         this.customer = customer;
@@ -60,6 +61,7 @@ public class Order implements Serializable {
         return total;
     }
 
+    //close a order
     public void closeOrder() {
         closed = true;
     }
